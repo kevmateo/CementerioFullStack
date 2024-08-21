@@ -68,8 +68,6 @@ function Registrar({ onClickSalir, onClickTerminarRegistro, onClickAbrirIniciarS
       genero: genero,
       contrasena: contrasena
     }
-    console.log(datos)
-    console.log(JSON.stringify(datos))
     fetch('http://localhost:3001/register', {
       method: 'POST',
       headers: {

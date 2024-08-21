@@ -22,7 +22,6 @@ function Login({ onClickSalir, onClickAbrirRegistrar, onClickAbrirOlvidarContras
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         if (data.mensaje) {
         } else {
           localStorage.setItem('access_token', data.token);

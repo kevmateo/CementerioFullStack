@@ -73,6 +73,18 @@ export class ClienteController {
     }
   }
 
+  static async crearCliente(req, res) {
+    const { cedula, nombre, apellido, edad, genero, ciudad, pais } = req.body
+    try {
+      const cliente = await ClienteModel.crearCliente(cedula, nombre, apellido, edad, genero, ciudad, pais)
+      res.json(cliente)
+    } catch (error) {
+      res.status(500).json({
+        message: 'Error interno del servidor', error: error
+      })
+    }
+  }
+
 }
 
 

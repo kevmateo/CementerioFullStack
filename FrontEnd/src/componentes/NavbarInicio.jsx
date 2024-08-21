@@ -39,6 +39,7 @@ function NavbarInicio() {
         <Link
           to={PATH_INICIO}
           className={`text-base text-black mx-6 max-md:hidden ${location.pathname === PATH_INICIO ? 'font-bold' : ''}`}
+          
         >
           INICIO
         </Link>

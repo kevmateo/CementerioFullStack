@@ -1,17 +1,16 @@
 const TicketType = Object.freeze({
-  NINO_FORANEO: { descripccion: 'Niño Foraneo', precio: 0.5 },
-  TERCERA_EDAD_FORANEO: { descripccion: 'Tercera Edad Foraneo', precio: 0.5 },
-  ADULTO_FORANEO: { descripccion: 'Adulto Foraneo', precio: 1 },
-  NINO_EXTRANJERO: { descripccion: 'Niño Extranjero', precio: 1 },
-  TERCERA_EDAD_EXTRANJERO: { descripccion: 'Tercera Edad Extranjero', precio: 1 },
-  ADULTO_EXTRANJERO: { descripccion: 'Adulto Extranjero', precio: 2 },
-  NACIONAL: { descripccion: 'Nacional', precio: 0 },
+  NINO_FORANEO: { descripccion: 'Niño', precio: 0.5 },
+  TERCERA_EDAD_FORANEO: { descripcion: 'Tercera Edad', precio: 0.5 },
+  ADULTO_FORANEO: { descripcion: 'Adulto', precio: 1 },
+  NINO_EXTRANJERO: { descripcion: 'Niño Extranjero', precio: 1 },
+  TERCERA_EDAD_EXTRANJERO: { descripcion: 'Tercera Edad Extranjero', precio: 1 },
+  ADULTO_EXTRANJERO: { descripcion: 'Adulto Extranjero', precio: 2 },
+  NACIONAL: { descripcion: 'Carchi', precio: 0 },
 })
 
 export function obtenerInfoTicket(edad, cedula) {
 
   const cedulaStr = String(cedula)
-  console.log(cedulaStr, edad)
 
   if (!cedulaStr.startsWith('04')){
     if (edad < 18) return TicketType.NINO_FORANEO

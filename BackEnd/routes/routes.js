@@ -10,5 +10,6 @@ router.post('/login', ClienteController.login)
 router.post('/register', ClienteController.register)
 router.get('/logout', ClienteController.logout)
 router.get('/cliente', ClienteController.getClienteByCedula)
+router.post('/crearcliente', ClienteController.crearCliente)
 
 export default router

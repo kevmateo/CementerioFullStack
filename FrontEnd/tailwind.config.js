@@ -25,9 +25,7 @@ export default {
         'minima': '.75rem',
         'minima-phone': '.688rem',
       },
-      boxShadow:{
-        'normal': '0px 4px 4px rgba(0, 0, 0, 0.25)',
-      },
+      
     },
   },
   plugins: [

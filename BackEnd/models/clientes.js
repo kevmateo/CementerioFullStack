@@ -13,9 +13,9 @@ export class ClienteModel {
 
   static async register(correo, cedula, nombre, apellido, edad, genero, ciudad, pais, contrasena) {
     const registrarse = `select insertarclienteycuenta('${cedula}', '${nombre}', '${apellido}', ${edad}, '${genero}', '${ciudad}', '${pais}', '${correo}', '${contrasena}, 'usuario')`
-    
+
     try {
-      const result = await pool.query(registrarse) 
+      const result = await pool.query(registrarse)
       return { success: true, data: result }
     } catch (error) {
       console.log(error)
@@ -38,7 +38,7 @@ export class ClienteModel {
     } catch (error) {
       console.log(error)
       return { error: 'Error en el servidor' }
-    } 
+    }
   }
 
   static async getClienteByCedula(cedula) {
@@ -47,6 +47,17 @@ export class ClienteModel {
       const result = await pool.query(query)
       return result.rows[0]
     } catch (error) {
+      return { message: 'Error en el servidor' }
+    }
+  }
+
+  static async crearCliente(cedula, nombre, apellido, edad, genero, ciudad, pais) {
+    const query = `insert into cliente (cedula, id_cuenta, primer_nombre, primer_apellido, edad, genero, ciudad, pais) values ('${cedula}', null, '${nombre}', '${apellido}', ${edad}, '${genero}', '${ciudad}', '${pais}')`
+    try {
+      const result = await pool.query(query)
+      return result
+    }
+    catch (error) {
       return { message: 'Error en el servidor' }
     }
   }
