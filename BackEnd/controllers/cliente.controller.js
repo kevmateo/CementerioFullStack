@@ -1,4 +1,3 @@
-import e from 'express'
 import { ClienteModel } from '../models/clientes.js'
 import jwt from 'jsonwebtoken'
 
@@ -41,7 +40,6 @@ export class ClienteController {
 
     try {
       const registrado = await ClienteModel.register(correo, cedula, nombre, apellido, edad, genero, ciudad, pais, contrasena)
-      console.log(registrado, 'odi')
       if (registrado.success) {
         res.json({ message: 'Usuario registrado' })
       } else {

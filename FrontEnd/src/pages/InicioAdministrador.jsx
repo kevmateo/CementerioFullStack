@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 import NavbarInicio from "../componentes/NavbarInicio"
 import InputEtiqueta from "../componentes/moleculas/InputEtiqueta"
 import BotonNormal from "../componentes/moleculas/BotonNormal"
-import QR from "../assets/QR.jpg"
 import BotonIcono from "../componentes/moleculas/BotonIcono"
 import IconImprimir from "../componentes/iconos/IconImprimir"
 import { obtenerInfoTicket } from '../tickets'
@@ -16,19 +15,22 @@ function InicioAdministrador() {
   const [paso2, setPaso2] = useState(false)
   const [paso3, setPaso3] = useState(false)
   const [pasoCrearUsuario, setPasoCrearUsuario] = useState(false)
-  const [ticketData, setTicketData] = useState({ descripcion: "", precio: 0 })
+  const [ticketData, setTicketData] = useState({ id: 0, descripcion: "", precio: 0 })
   const [cedulaInput, setCedulaInput] = useState("")
   const [numEntradas, setNumEntradas] = useState(1)
   const [valorTotal, setValorTotal] = useState(0)
-  const [fechaVencimiento, setFechaVencimiento] = useState("")
+  const [motivoVisita, setMotivoVisita] = useState("")
+  const [fechaEmision, setFechaEmision] = useState(new Date().toISOString().split('T')[0])
+  const [fechaCaducidad, setFechaCaducidad] = useState("")
   const [clienteData, setClienteData] = useState({
+    id_cliente: "",
     cedula: "",
     pais: "",
     ciudad: "",
     primer_nombre: "",
     primer_apellido: "",
     edad: "",
-    genero: "",
+    genero: ""
   });
 
   const handlePasarPaso = () => {
@@ -44,14 +46,9 @@ function InicioAdministrador() {
     setPaso2(false)
   }
 
-  const handleComprarEntrada = () => {
-    handleFechaVencimiento()
-    setPaso2(false)
-    setPaso3(true)
-  }
-
   const handleIrInicio = () => {
     setCedulaInput("")
+    setMotivoVisita("")
     setPaso3(false)
     setPaso1(true)
   }
@@ -72,6 +69,7 @@ function InicioAdministrador() {
       .then(data => {
         if (data && data.cedula) {
           setClienteData({
+            id_cliente: data.id_cliente || "",
             cedula: data.cedula || "",
             pais: data.pais || "",
             ciudad: data.ciudad || "",
@@ -99,7 +97,7 @@ function InicioAdministrador() {
 
   const handleCrearCliente = () => {
 
-    if(!handleValidarCamposRegistro()) {
+    if (!handleValidarCamposRegistro()) {
       return
     }
 
@@ -112,7 +110,7 @@ function InicioAdministrador() {
       edad: clienteData.edad,
       genero: clienteData.genero,
     }
-    fetch('http://localhost:3001/crearcliente',{
+    fetch('http://localhost:3001/crearcliente', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -126,6 +124,41 @@ function InicioAdministrador() {
         } else {
           setPasoCrearUsuario(false)
           setPaso2(true)
+        }
+      })
+  }
+
+  const handleGuardarTicket = () => {
+
+    if (!handleValidarCamposDeCompra()) {
+      return
+    }
+
+    const datos = {
+      id_cliente: clienteData.id_cliente,
+      cedula: clienteData.cedula,
+      id_tipo_ticket: ticketData.id,
+      fecha_emision: fechaEmision,
+      fecha_caducidad: fechaCaducidad,
+      valido_por: numEntradas,
+      motivo_visita: motivoVisita,
+      codigo_qr: generarQR(numEntradas, clienteData.ciudad, clienteData.pais, ticketData.descripcion, clienteData.primer_nombre, clienteData.primer_apellido, ticketData.precio, valorTotal),
+    }
+    console.log(datos)
+    fetch('http://localhost:3001/guardarTicket', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(datos)
+    })
+      .then((response) => response.json())
+      .then(data => {
+        if (data.mensaje) {
+          console.log(data.mensaje)
+        } else {
+          setPaso2(false)
+          setPaso3(true)
         }
       })
   }
@@ -165,16 +198,28 @@ function InicioAdministrador() {
     return true
   }
 
-  useEffect(() => {
-    setValorTotal(numEntradas * ticketData.precio);
-  }, [numEntradas, ticketData]);
+  const handleValidarCamposDeCompra = () => {
 
-  const handleFechaVencimiento = () => {
-    const fechaActual = new Date();
-    const fechaVenc = new Date(fechaActual.getTime() + 24 * 60 * 60 * 1000)
-    const fechaVencString = `${fechaVenc.getDate().toString().padStart(2, '0')}/${(fechaVenc.getMonth() + 1).toString().padStart(2, '0')}/${fechaVenc.getFullYear()} - ${fechaVenc.getHours().toString().padStart(2, '0')}:${fechaVenc.getMinutes().toString().padStart(2, '0')}`
-    setFechaVencimiento(fechaVencString)
+    const campos = [numEntradas, motivoVisita];
+    const camposVacios = campos.some(campo => campo === '');
+
+    if (camposVacios) {
+      alert('Todos los campos son obligatorios');
+      return false;
+    } else if (numEntradas <= 0) {
+      alert('El número de entradas debe ser mayor a 0');
+      return false;
+    }
+    return true;
   }
+
+  useEffect(() => {
+    setValorTotal(numEntradas * ticketData.precio)
+
+    const emisionDate = new Date(fechaEmision)
+    emisionDate.setDate(emisionDate.getDate() + 1)
+    setFechaCaducidad(emisionDate.toISOString().split('T')[0])
+  }, [numEntradas, ticketData, fechaEmision]);
 
   return (
     <div className="bg-Gris-Fondos h-screen flex flex-col items-center justify-center w-screen">
@@ -199,16 +244,17 @@ function InicioAdministrador() {
             <InputEtiqueta etiqueta="Nombres" placeholder="Perez Terán" width={'343px'} type={'text'} disabled={true} value={clienteData.primer_nombre} />
             <InputEtiqueta etiqueta="Apellidos" placeholder="Jose David" width={'343px'} type={'text'} disabled={true} value={clienteData.primer_apellido} />
             <InputEtiqueta etiqueta="Edad" placeholder="18 agosto 2002" width={'343px'} type={'text'} disabled={true} value={clienteData.edad} />
-            <InputEtiqueta etiqueta="Valor de la entrada" placeholder="Adulto 1$" width={'343px'} disabled={true} type={'text'} value={`${ticketData.descripcion} ${ticketData.precio}$`} />
+            <InputEtiqueta etiqueta="Valor de la entrada" placeholder="Adulto 1$" width={'343px'} disabled={true} type={'text'} value={`${ticketData.descripcion} ${ticketData.precio}`} />
           </section>
           <section className="grid grid-cols-2 gap-x-[40px] gap-y-[10px] max-md:flex max-md:flex-col">
             <span className="col-span-2 subtitulo-bold">Entrada</span>
             <InputEtiqueta etiqueta="Entrada para" placeholder="Ingresa el número de entradas" width={'343px'} type={'number'} value={numEntradas} onChange={(e) => setNumEntradas(Number(e.target.value))} />
-            <InputEtiqueta etiqueta="Valor total" placeholder="0$" width={'343px'} type={'text'} disabled={true} value={`${valorTotal}`} />
+            <InputEtiqueta etiqueta="Valor total" placeholder="0$" width={'343px'} type={'text'} disabled={true} value={valorTotal} />
+            <InputEtiqueta etiqueta="Motivo de la visita" placeholder="ej. Turismo" width={'343px'} type={'text'} value={motivoVisita} onChange={(e) => setMotivoVisita(e.target.value)} />
           </section>
           <section className="mt-[20px] ">
             <BotonNormal texto="CANCELAR" color='#C82333' onClick={hanldeRegresarPaso} />
-            <BotonNormal texto="COMPRAR ENTRADA" color='#28A745' margin={'0 0 0 20px'} onClick={handleComprarEntrada} />
+            <BotonNormal texto="COMPRAR ENTRADA" color='#28A745' margin={'0 0 0 20px'} onClick={handleGuardarTicket} />
           </section>
         </div>
       }
@@ -222,7 +268,7 @@ function InicioAdministrador() {
           </section>
           <section className="flex flex-col mt-[25px] text-base text-center">
             <span>Fecha de vencimiento</span>
-            <span className="font-bold">{fechaVencimiento}</span>
+            <span className="font-bold">{fechaCaducidad}</span>
           </section>
           <section className="flex flex-col mt-[30px] text-base text-center gap-2">
             <BotonIcono texto="IMPRIMIR" color='#0069D9' marginTexto={'0 15px 0 0'} iconDerecha={<IconImprimir width={'20px'} height={'20px'} color={'white'} />} />

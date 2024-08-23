@@ -1,11 +1,11 @@
-const TicketType = Object.freeze({
-  NINO_FORANEO: { descripccion: 'Niño', precio: 0.5 },
-  TERCERA_EDAD_FORANEO: { descripcion: 'Tercera Edad', precio: 0.5 },
-  ADULTO_FORANEO: { descripcion: 'Adulto', precio: 1 },
-  NINO_EXTRANJERO: { descripcion: 'Niño Extranjero', precio: 1 },
-  TERCERA_EDAD_EXTRANJERO: { descripcion: 'Tercera Edad Extranjero', precio: 1 },
-  ADULTO_EXTRANJERO: { descripcion: 'Adulto Extranjero', precio: 2 },
-  NACIONAL: { descripcion: 'Carchi', precio: 0 },
+export const TicketType = Object.freeze({
+  NINO_FORANEO: {id: 6,  descripccion: 'Niño', precio: 0.5 },
+  TERCERA_EDAD_FORANEO: {id: 5, descripcion: 'Tercera Edad', precio: 0.5 },
+  ADULTO_FORANEO: {id: 4, descripcion: 'Adulto', precio: 1 },
+  NINO_EXTRANJERO: {id: 2, descripcion: 'Niño Extranjero', precio: 1 },
+  TERCERA_EDAD_EXTRANJERO: {id: 3, descripcion: 'Tercera Edad Extranjero', precio: 1 },
+  ADULTO_EXTRANJERO: {id: 1, descripcion: 'Adulto Extranjero', precio: 2 },
+  NACIONAL: {id: 7, descripcion: 'Carchi', precio: 0 },
 })
 
 export function obtenerInfoTicket(edad, cedula) {
