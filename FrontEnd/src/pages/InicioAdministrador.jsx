@@ -20,7 +20,7 @@ function InicioAdministrador() {
   const [numEntradas, setNumEntradas] = useState(1)
   const [valorTotal, setValorTotal] = useState(0)
   const [motivoVisita, setMotivoVisita] = useState("")
-  const [fechaEmision, setFechaEmision] = useState(new Date().toISOString().split('T')[0])
+  const [fechaEmision, setFechaEmision] = useState(new Date().toISOString())
   const [fechaCaducidad, setFechaCaducidad] = useState("")
   const [clienteData, setClienteData] = useState({
     id_cliente: "",
@@ -144,7 +144,7 @@ function InicioAdministrador() {
       motivo_visita: motivoVisita,
       codigo_qr: generarQR(numEntradas, clienteData.ciudad, clienteData.pais, ticketData.descripcion, clienteData.primer_nombre, clienteData.primer_apellido, ticketData.precio, valorTotal),
     }
-    console.log(datos)
+
     fetch('http://localhost:3001/guardarTicket', {
       method: 'POST',
       headers: {
@@ -218,7 +218,7 @@ function InicioAdministrador() {
 
     const emisionDate = new Date(fechaEmision)
     emisionDate.setDate(emisionDate.getDate() + 1)
-    setFechaCaducidad(emisionDate.toISOString().split('T')[0])
+    setFechaCaducidad(emisionDate.toISOString())
   }, [numEntradas, ticketData, fechaEmision]);
 
   return (
@@ -268,7 +268,7 @@ function InicioAdministrador() {
           </section>
           <section className="flex flex-col mt-[25px] text-base text-center">
             <span>Fecha de vencimiento</span>
-            <span className="font-bold">{fechaCaducidad}</span>
+            <span className="font-bold">{fechaCaducidad.split('T')[0]}</span>
           </section>
           <section className="flex flex-col mt-[30px] text-base text-center gap-2">
             <BotonIcono texto="IMPRIMIR" color='#0069D9' marginTexto={'0 15px 0 0'} iconDerecha={<IconImprimir width={'20px'} height={'20px'} color={'white'} />} />

@@ -15,5 +15,6 @@ router.get('/cliente', ClienteController.getClienteByCedula)
 router.post('/crearcliente', ClienteController.crearCliente)
 
 router.post('/guardarTicket', TicketController.guardarTicket)
+router.get('/tickets', TicketController.getTickets)
 
 export default router

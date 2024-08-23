@@ -17,4 +17,20 @@ export class TicketController {
     }
   }
 
+  static async getTickets(req, res) {
+    
+    const cedula = req.query.cedula;
+
+    try {
+      const tickets = await TicketModel.getTickets(cedula);
+      res.json(tickets);
+    } catch (error) {
+      console.error('Error en el controlador:', error);
+      res.status(500).json({
+        message: 'Error interno del servidor',
+        error
+      });
+    }
+  }
+
 }

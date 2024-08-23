@@ -18,4 +18,16 @@ export class TicketModel {
     }
   }
 
+  static async getTickets(cedula) {
+    const query = `Select * from ticket tk where tk.cedula = $1`
+
+    try {
+      const result = await pool.query(query, [cedula]);
+      return result.rows;
+  } catch (error) {
+      console.error('Error en la base de datos:', error);
+      return { message: 'Error en el servidor', error };
+    }
+  }
+
 }

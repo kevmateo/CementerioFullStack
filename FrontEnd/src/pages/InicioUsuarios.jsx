@@ -14,7 +14,7 @@ function InicioUsuarios() {
   const [numEntradas, setNumEntradas] = useState(1);
   const [valorTotal, setValorTotal] = useState(0);
   const [motivoVisita, setMotivoVisita] = useState("")
-  const [fechaEmision, setFechaEmision] = useState(new Date().toISOString().split('T')[0]);
+  const [fechaEmision, setFechaEmision] = useState(new Date().toISOString());
   const [fechaCaducidad, setFechaCaducidad] = useState("");
   const [clienteData, setClienteData] = useState({
     id_cliente: "",
@@ -55,7 +55,7 @@ function InicioUsuarios() {
 
     const emisionDate = new Date(fechaEmision)
     emisionDate.setDate(emisionDate.getDate() + 1)
-    setFechaCaducidad(emisionDate.toISOString().split('T')[0])
+    setFechaCaducidad(emisionDate.toISOString())
   }, [numEntradas, ticketData, fechaEmision]);
 
 
@@ -150,7 +150,7 @@ function InicioUsuarios() {
           </section>
           <section className="flex flex-col mt-[25px] text-base text-center">
             <span>Fecha de vencimiento</span>
-            <span className="font-bold">{fechaCaducidad}</span>
+            <span className="font-bold">{fechaCaducidad.split('T')[0]}</span>
           </section>
           <section className="flex flex-col mt-[30px] text-base text-center gap-2">
             <BotonIcono texto="DESCARGAR" color='#0069D9' marginTexto={'0 15px 0 0'} iconDerecha={<IconDescargar width={'20px'} height={'20px'} color={'white'} color2={'white'} />} />

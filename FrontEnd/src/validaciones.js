@@ -48,3 +48,8 @@ export const validarCorreo = (correo) => {
   }
   return true
 }
+
+export const formatearFecha = (fecha) => {
+  const date = new Date(fecha)
+  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}`
+}
